@@ -1,0 +1,24 @@
+name: Rust_Build
+
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+  schedule:
+    - cron: "25 4 * * *"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  rust-build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - run: cargo install wasm-pack
+    - run: npm run build
