@@ -12,3 +12,4 @@ md5 = "0.7.0"
 bcrypt = "0.10.1"
 getrandom = { version = "0.2", features = ["js"] }
 js-sys = "0.3.55"
+wasm-bindgen-futures = "0.4.28"

@@ -27,4 +27,23 @@ describe('native module test cases', () => {
 
   });
 
+  it('should support async bcrypt', async () => {
+    const password = "Passw0rD!"
+    const hash_promise = native.async_bcrypt_hash(password)
+    expect(hash_promise).toBeInstanceOf(Promise)
+    const hash = await hash_promise
+    expect(typeof hash).toBe("string")
+
+    const hash2 = await native.async_bcrypt_hash(password)
+    expect(hash).not.toBeUndefined()
+    expect(hash2).not.toEqual(hash)
+    expect(await native.async_bcrypt_verify(password, hash)).toBeTruthy()
+
+    // false
+    await expect(() => native.async_bcrypt_verify(password, '123'))
+      .rejects
+      .toThrow("Invalid hash: 123")
+    expect(await native.async_bcrypt_verify("password", hash)).toBeFalsy()
+  });
+
 });

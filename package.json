@@ -28,5 +28,11 @@
     "@types/jest": "^27.0.2",
     "standard-version": "^9",
     "jest": "^27.3.1"
-  }
+  },
+  "keywords": [
+    "hash",
+    "native",
+    "rust",
+    "wasm"
+  ]
 }

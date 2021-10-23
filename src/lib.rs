@@ -27,6 +27,14 @@ pub fn bcrypt_hash(password: String) -> String {
     digest
 }
 
+/// hash with bcrypt in async mode
+#[wasm_bindgen]
+pub async fn async_bcrypt_hash(password: String) -> Result<JsValue, JsValue> {
+    let promise =
+        wasm_bindgen_futures::future_to_promise(async { Ok(JsValue::from(bcrypt_hash(password))) });
+    Ok(wasm_bindgen_futures::JsFuture::from(promise).await?)
+}
+
 /// verify bcrypt password with stored hash
 ///
 /// * `password` plain text password/secret
@@ -37,4 +45,19 @@ pub fn bcrypt_verify(password: String, hash: String) -> Result<bool, JsValue> {
         Ok(result) => return Ok(result),
         Err(err) => return Err(Error::new(&format!("{}", err)).into()),
     }
+}
+
+/// async verify bcrypt password with stored hash
+///
+/// * `password` plain text password/secret
+/// * `hash` bcrypt hashed text
+#[wasm_bindgen]
+pub async fn async_bcrypt_verify(password: String, hash: String) -> Result<JsValue, JsValue> {
+    let promise = wasm_bindgen_futures::future_to_promise(async {
+        match bcrypt_verify(password, hash) {
+            Ok(result) => return Ok(JsValue::from(result)),
+            Err(err) => return Err(err),
+        }
+    });
+    Ok(wasm_bindgen_futures::JsFuture::from(promise).await?)
 }
