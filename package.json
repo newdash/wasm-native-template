@@ -14,12 +14,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Soontao/wasm-native-template.git"
+    "url": "git+https://github.com/newdash/wasm-native-template.git"
   },
   "author": "Theo Sun",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Soontao/wasm-native-template/issues"
+    "url": "https://github.com/newdash/wasm-native-template/issues"
   },
-  "homepage": "https://github.com/Soontao/wasm-native-template#readme"
+  "homepage": "https://github.com/newdash/wasm-native-template#readme"
 }
