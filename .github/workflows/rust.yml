@@ -28,6 +28,12 @@ jobs:
           ~/.cargo/git
           target
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-    - run: cargo install wasm-pack
-    - run: npm run build
+        
+    - name: update rust
+      run: rustup update
+      
+    - name: install wasm-pack
+      run: cargo install wasm-pack
+      
+    - name: build
+      run: npm run build
