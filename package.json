@@ -1,0 +1,18 @@
+{
+  "name": "@newdash/native",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "wasm-pack build --target nodejs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Soontao/wasm-native-template.git"
+  },
+  "author": "Theo Sun",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Soontao/wasm-native-template/issues"
+  },
+  "homepage": "https://github.com/Soontao/wasm-native-template#readme"
+}

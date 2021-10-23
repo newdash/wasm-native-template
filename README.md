@@ -1,1 +1,3 @@
-# wasm-native-template
+# @newdash/native
+
+> WASM native module template
