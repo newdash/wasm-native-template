@@ -1,0 +1,54 @@
+name: npm-release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  npm-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+          registry-url: https://registry.npmjs.org/
+      - name: nodejs cache
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: rust cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: update rust
+        run: rustup update
+
+      - name: install wasm-pack
+        run: cargo install wasm-pack
+
+      - name: npm install
+        run: npm install
+
+      - name: npm build
+        run: npm run build
+
+      - name: test
+        run: npm test
+
+      - name: npm auth & publish
+        run: npm run build && npm publish --access public --tag latest
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.Z_NPM_TOKEN}}

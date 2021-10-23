@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "wasm-pack build --target nodejs"
+    "build": "wasm-pack build --target nodejs",
+    "test": "jest",
+    "release": "standard-version --no-verify"
   },
   "files": [
     "index.js",
@@ -21,5 +23,10 @@
   "bugs": {
     "url": "https://github.com/newdash/wasm-native-template/issues"
   },
-  "homepage": "https://github.com/newdash/wasm-native-template#readme"
+  "homepage": "https://github.com/newdash/wasm-native-template#readme",
+  "devDependencies": {
+    "@types/jest": "^27.0.2",
+    "standard-version": "^9",
+    "jest": "^27.3.1"
+  }
 }
