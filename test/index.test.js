@@ -7,6 +7,10 @@ describe('native module test cases', () => {
       .toBe("202cb962ac59075b964b07152d234b70")
     expect(native.md5_hash("https://github.com/newdash/wasm-native-template"))
       .toBe("c738f0b79196935cf02f5463745a4535")
+
+    // false
+    expect(() => native.md5_hash(123))
+      .toThrow("function 'md5_hash' request string parameter, but give 'number'")
   });
 
   it('should support bcrypt', () => {
@@ -16,6 +20,11 @@ describe('native module test cases', () => {
     expect(hash).not.toBeUndefined()
     expect(hash2).not.toEqual(hash)
     expect(native.bcrypt_verify(password, hash)).toBeTruthy()
+
+    // false
+    expect(() => native.bcrypt_verify(password, '123')).toThrow("Invalid hash: 123")
+    expect(native.bcrypt_verify("password", hash)).toBeFalsy()
+
   });
 
 });
