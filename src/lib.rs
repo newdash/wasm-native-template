@@ -1,6 +1,8 @@
 use js_sys::Error;
-use wasm_bindgen::prelude::*;
+use sqlparser::dialect::GenericDialect;
+use sqlparser::parser::Parser;
 
+use wasm_bindgen::prelude::*;
 /// hash given string with md5 algorithm, and return hex hash value
 ///
 /// * `value` plain string text
@@ -18,20 +20,33 @@ pub fn md5_hash(value: JsValue) -> Result<String, JsValue> {
     Ok(format!("{:x}", digest))
 }
 
+#[wasm_bindgen]
+pub fn parse_sql(sql: String) -> String {
+    let ast = Parser::parse_sql(&GenericDialect {}, &sql).unwrap();
+    format!("{:?}", ast)
+}
+
 /// put a plain password text to hash format
 ///
 /// * `password` plain text password/secret, only accept string
 #[wasm_bindgen]
-pub fn bcrypt_hash(password: String) -> String {
-    let digest = bcrypt::hash(password, bcrypt::DEFAULT_COST).unwrap();
+pub fn bcrypt_hash(password: String, cost: Option<u32>) -> String {
+    let digest = bcrypt::hash(password, cost.unwrap_or(bcrypt::DEFAULT_COST)).unwrap();
     digest
+}
+
+pub async fn internal_async_bcrypt_hash(
+    password: String,
+    cost: Option<u32>,
+) -> Result<JsValue, JsValue> {
+    Ok(JsValue::from(bcrypt_hash(password, cost)))
 }
 
 /// hash with bcrypt in async mode
 #[wasm_bindgen]
-pub async fn async_bcrypt_hash(password: String) -> Result<JsValue, JsValue> {
+pub async fn async_bcrypt_hash(password: String, cost: Option<u32>) -> Result<JsValue, JsValue> {
     let promise =
-        wasm_bindgen_futures::future_to_promise(async { Ok(JsValue::from(bcrypt_hash(password))) });
+        wasm_bindgen_futures::future_to_promise(internal_async_bcrypt_hash(password, cost));
     Ok(wasm_bindgen_futures::JsFuture::from(promise).await?)
 }
 

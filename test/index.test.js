@@ -17,8 +17,11 @@ describe('native module test cases', () => {
     const password = "Passw0rD!"
     const hash = native.bcrypt_hash(password)
     const hash2 = native.bcrypt_hash(password)
+    const hash3 = native.bcrypt_hash(password, 5)
+
     expect(hash).not.toBeUndefined()
     expect(hash2).not.toEqual(hash)
+    expect(hash3).not.toEqual(hash)
     expect(native.bcrypt_verify(password, hash)).toBeTruthy()
 
     // false
@@ -32,18 +35,27 @@ describe('native module test cases', () => {
     const hash_promise = native.async_bcrypt_hash(password)
     expect(hash_promise).toBeInstanceOf(Promise)
     const hash = await hash_promise
+    expect(hash).not.toBeUndefined()
     expect(typeof hash).toBe("string")
+    expect(await native.async_bcrypt_verify(password, hash)).toBeTruthy()
 
     const hash2 = await native.async_bcrypt_hash(password)
-    expect(hash).not.toBeUndefined()
     expect(hash2).not.toEqual(hash)
-    expect(await native.async_bcrypt_verify(password, hash)).toBeTruthy()
+
+    const hash3 = await native.async_bcrypt_hash(password, 5)
+    expect(hash3).not.toEqual(hash)
+    expect(await native.async_bcrypt_verify(password, hash3)).toBeTruthy()
 
     // false
     await expect(() => native.async_bcrypt_verify(password, '123'))
       .rejects
       .toThrow("Invalid hash: 123")
     expect(await native.async_bcrypt_verify("password", hash)).toBeFalsy()
+  });
+
+  it('should support parse SQL', async () => {
+   const sql =  native.parse_sql("SELECT 1 FROM DUMMY")
+   expect(sql).not.toBeUndefined()
   });
 
 });
