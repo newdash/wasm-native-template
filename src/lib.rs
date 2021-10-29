@@ -23,6 +23,7 @@ pub fn md5_hash(value: JsValue) -> Result<String, JsValue> {
 #[wasm_bindgen]
 pub fn parse_sql(sql: String) -> String {
     let ast = Parser::parse_sql(&GenericDialect {}, &sql).unwrap();
+    // TODO to be a real SQL which could be used in JS
     format!("{:?}", ast)
 }
 
