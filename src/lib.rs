@@ -1,5 +1,6 @@
 use js_sys::Error;
-use sqlparser::dialect::GenericDialect;
+
+use sqlparser::dialect::*;
 use sqlparser::parser::Parser;
 
 use wasm_bindgen::prelude::*;
@@ -21,10 +22,23 @@ pub fn md5_hash(value: JsValue) -> Result<String, JsValue> {
 }
 
 #[wasm_bindgen]
-pub fn parse_sql(sql: String) -> String {
-    let ast = Parser::parse_sql(&GenericDialect {}, &sql).unwrap();
-    // TODO to be a real SQL which could be used in JS
-    format!("{:?}", ast)
+pub fn parse_sql(sql: String, s_dialect: JsValue) -> Result<JsValue, JsValue> {
+    let dialect: Box<dyn Dialect>;
+    if s_dialect.is_string() {
+        dialect = match s_dialect.as_string().unwrap().as_ref() {
+            "ansi" => Box::new(AnsiDialect {}),
+            "postgres" => Box::new(PostgreSqlDialect {}),
+            "ms" => Box::new(MsSqlDialect {}),
+            "snowflake" => Box::new(SnowflakeDialect {}),
+            "hive" => Box::new(HiveDialect {}),
+            _ => Box::new(GenericDialect {}),
+        };
+    } else {
+        dialect = Box::new(GenericDialect {})
+    }
+
+    let ast = Parser::parse_sql(&*dialect, &sql).unwrap();
+    Ok(serde_wasm_bindgen::to_value(&ast).unwrap())
 }
 
 /// put a plain password text to hash format
